@@ -1,12 +1,15 @@
 import json
 import os
 
+from dotenv import load_dotenv
 from googleapiclient.discovery import build
 
+load_dotenv()
+
+api_key: str = os.getenv('YT_API_KEY')
 
 class Channel:
     """Класс для ютуб-канала"""
-    # api_key: str = os.getenv('YT_API_KEY')
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
         self.youtube: object = Channel.get_service()
@@ -47,7 +50,7 @@ class Channel:
 
     @classmethod
     def get_service(cls):
-        return build('youtube', 'v3', developerKey=os.getenv('YT_API_KEY'))
+        return build('youtube', 'v3', developerKey=api_key)
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
@@ -63,8 +66,6 @@ class Channel:
             "video_count": self.video_count,
             "view_count": self.view_count
         }
-        
-        json_data = json.dumps(data)
 
         with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(json_data, f)
+            json.dump(data, f, ensure_ascii=False, indent=4)
