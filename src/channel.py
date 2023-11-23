@@ -22,7 +22,8 @@ class Channel:
 
     @classmethod
     def get_service(cls):
-        return build('youtube', 'v3', developerKey=os.getenv('YT_API_KEY'))
+        # return build('youtube', 'v3', developerKey=os.getenv('YT_API_KEY'))
+        return build('youtube', 'v3', developerKey='AIzaSyB7Rzq0dkANPe3Ejt3l753dNEd3Ztbyzeo')
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
