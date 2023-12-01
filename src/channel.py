@@ -8,6 +8,7 @@ load_dotenv()
 
 api_key: str = os.getenv('YT_API_KEY')
 
+
 class Channel:
     """Класс для ютуб-канала"""
     def __init__(self, channel_id: str) -> None:
