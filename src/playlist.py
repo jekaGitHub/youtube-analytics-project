@@ -1,7 +1,8 @@
 from googleapiclient.discovery import build
 import os
 from dotenv import load_dotenv
-# from isodate import parse_duration
+import isodate
+from datetime import timedelta
 
 load_dotenv()
 
@@ -27,12 +28,30 @@ class PlayList:
 
     @property
     def total_duration(self):
-        pass
+        playlist_videos = youtube.playlistItems().list(playlistId=self.playlist_id,
+                                                       part='contentDetails',
+                                                       maxResults=50,
+                                                       ).execute()
+        video_ids: list[str] = [video['contentDetails']['videoId'] for video in playlist_videos['items']]
+        video_response = youtube.videos().list(part='contentDetails,statistics',
+                                               id=','.join(video_ids)
+                                               ).execute()
+        total = timedelta(seconds=0)
+        for video in video_response['items']:
+            iso_8601_duration = video['contentDetails']['duration']
+            duration = isodate.parse_duration(iso_8601_duration)
+            total += duration
+        return total
 
     def show_best_video(self):
-        pass
+        playlist_videos = youtube.playlistItems().list(playlistId=self.playlist_id,
+                                                       part='contentDetails',
+                                                       maxResults=50,
+                                                       ).execute()
+        video_ids: list[str] = [video['contentDetails']['videoId'] for video in playlist_videos['items']]
+        video_response = youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
+                                               id=','.join(video_ids)
+                                               ).execute()
 
-
-# if __name__ == '__main__':
-#     obj1 = PlayList('PLv_zOGKKxVpj-n2qLkEM2Hj96LO6uqgQw')
-#     print(obj1.get_playlist('PLv_zOGKKxVpj-n2qLkEM2Hj96LO6uqgQw'))
+        popular_video = max(video_response, key=lambda x: x['items'][0]['statistics']['likeCount'])
+        return popular_video.url_video
