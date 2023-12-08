@@ -53,5 +53,5 @@ class PlayList:
                                                id=','.join(video_ids)
                                                ).execute()
 
-        popular_video = max(video_response, key=lambda x: x['items'][0]['statistics']['likeCount'])
-        return popular_video.url_video
+        popular_video = max(video_response['items'], key=lambda item: item['statistics']['likeCount'])
+        return f'https://youtu.be/{popular_video.get("id")}'
