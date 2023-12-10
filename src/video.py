@@ -12,14 +12,21 @@ youtube = build('youtube', 'v3', developerKey=api_key)
 class Video:
     def __init__(self, video_id):
         self.video_id = video_id
-        self.video_response = Video.get_video(video_id)
-        self.video_title = self.video_response['items'][0]['snippet']['title']
-        self.video_url = "https://youtu.be/" + self.video_id
-        self.view_count = self.video_response['items'][0]['statistics']['viewCount']
-        self.like_count = self.video_response['items'][0]['statistics']['likeCount']
+        try:
+            self.video_response = Video.get_video(video_id)
+        except AttributeError:
+            self.title = None
+            self.video_url = None
+            self.view_count = None
+            self.like_count = None
+        else:
+            self.title = self.video_response['items'][0]['snippet']['title']
+            self.video_url = "https://youtu.be/" + self.video_id
+            self.view_count = self.video_response['items'][0]['statistics']['viewCount']
+            self.like_count = self.video_response['items'][0]['statistics']['likeCount']
 
     def __str__(self):
-        return f'{self.video_title}'
+        return f'{self.title}'
 
     @classmethod
     def get_video(cls, video_id):
