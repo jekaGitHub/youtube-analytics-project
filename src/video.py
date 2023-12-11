@@ -14,7 +14,7 @@ class Video:
         self.video_id = video_id
         try:
             self.video_response = Video.get_video(video_id)
-        except AttributeError:
+        except IndexError:
             self.title = None
             self.video_url = None
             self.view_count = None
